@@ -9,4 +9,12 @@ class RedisGeolocalizationApiResultCache {
         });
     }
 
+    get(key) {
+        return this.client.get(key);
+    }
+
+    add(key, value) {
+        return this.client.set(key, value);
+    }
+
 }
