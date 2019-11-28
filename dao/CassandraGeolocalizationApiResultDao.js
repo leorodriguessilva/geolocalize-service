@@ -48,3 +48,5 @@ class CassandraGeolocalizationApiResultDao {
     }
 
 }
+
+module.exports = CassandraGeolocalizationApiResultDao;

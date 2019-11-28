@@ -1,61 +1,49 @@
 "use strict";
+const GeolocalizeService = require('./service/GeolocalizeService');
 const CassandraGeolocalizationApiResultDao = require('./dao/CassandraGeolocalizationApiResultDao');
 const RedisGeolocalizationApiResultCache = require('./dao/RedisGeolocalizationApiResultCache');
 
-const geolocalizationApiResultDao = new CassandraGeolocalizationApiResultDao(
-    env.databaseServerAddress, 
-    env.databaseUser, env.databasePass);
+function geolocalize(env, event) {
+    const geolocalizationApiResultDao = new CassandraGeolocalizationApiResultDao(
+        env.databaseServerAddress, 
+        env.databaseUser, env.databasePass);
 
-const redisGeolocalizationApiResultCache = new RedisGeolocalizationApiResultCache(
-    env.cacheServerAddress, 
-    env.cacheServerPass);
+    const redisGeolocalizationApiResultCache = new RedisGeolocalizationApiResultCache(
+        env.cacheServerAddress, 
+        env.cacheServerPass);
+        
+    const mapsApiKey = env.mapsApiKey;
 
-const mapsApiKey = env.mapsApiKey;
+    const geolocalizeService = new GeolocalizeService(
+        geolocalizationApiResultDao, 
+        redisGeolocalizationApiResultCache,
+        mapsApiKey,
+        {
+            amountYear: 1,
+            amountMonths: 2,
+            amountDays: 3,
+        });
 
-const geolocalizationQuery = event.geolocalizationQuery;
+    const geolocalizationQuery = event.geolocalizationQuery;
 
-var latlon = redisGeolocalizationApiResultCache.get(geolocalizationQuery);
+    const latlon = geolocalizeService.geolocalize(geolocalizationQuery);
+    geolocalizeService.shutdown();
 
-if(latlon) {
     return latlon;
 }
 
-latlon = findLatLonInDatabase(databaseConnection, geolocalizationQuery);
-
-if(latlon) {
-    cacheConnection.add(geolocalizationQuery, latlon);
-    return latlon;
+const env = {
+    databaseServerAddress: '127.0.0.1',
+    databaseUser: 'user',
+    databasePass: 'pass',
+    cacheServerAddress: '127.0.0.1',
+    cacheServerPass: 'pass',
+    mapsApiKey: 'key',
 }
 
-latlon = findLatLonByExternalApi(mapsApiKey, geolocalizationQuery);
-
-if(latlon) {
-    cacheConnection.add(geolocalizationQuery, latlon);
-    saveInDatabase(geolocalizationQuery, latlon[0], latlon[1]);
-    geolocalizationApiResultDao.shutdown();
-    return latlon;
+const event = {
+    geolocalizationQuery: process.argv[2],
 }
 
-function findLatLonInDatabase(geolocalizationQuery) {
-    var geolocalizationApiResult = geolocalizationApiResultDao.findByQuery(geolocalizationQuery);
-    return [geolocalizationApiResult.longitude, geolocalizationApiResult.latitude];
-}
-
-function saveInDatabase(geolocalizationQuery, latitude, longitude) {
-    geolocalizationApiResult = {
-        query: geolocalizationQuery, 
-        latitude,
-        longitude,
-        expireAt: getDatabaseExpireAt(), 
-    }
-    geolocalizationApiResultDao.save(geolocalizationApiResult);
-}
-
-function getDatabaseExpireAt() {
-    var current = new Date();
-    var year = current.getFullYear();
-    var month = current.getMonth();
-    var day = current.getDate();
-    var expireAt = new Date(year + env.amountYearToExpire, month + env.amountMonthToExpire, day + env.amountDayToExpire);
-    return expireAt;
-}
+var latlon = geolocalize(env, event);
+console.log(JSON.stringify(latlon));

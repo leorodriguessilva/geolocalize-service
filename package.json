@@ -1,0 +1,31 @@
+{
+  "name": "geolocalize-service",
+  "version": "0.0.1",
+  "description": "Service to translate addresses into longitude and latitude",
+  "main": "Geolocalize.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leorodriguessilva/geolocalize-service.git"
+  },
+  "keywords": [
+    "gelocalization",
+    "robust",
+    "cache",
+    "consisten",
+    "hashing",
+    "consistency"
+  ],
+  "author": "leonardo.silva",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/leorodriguessilva/geolocalize-service/issues"
+  },
+  "homepage": "https://github.com/leorodriguessilva/geolocalize-service#readme",
+  "dependencies": {
+    "cassandra-driver": "^4.3.1",
+    "redis": "^2.8.0"
+  }
+}
