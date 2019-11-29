@@ -13,40 +13,33 @@ class GeolocalizeService {
         }
     }
     
-    geolocalize(geolocalizationQuery) {
-        var latlonRes = this.redisGeolocalizationApiResultCache.get(geolocalizationQuery);
+    async geolocalize(geolocalizationQuery) {
+        var latlon = await this.getFromCache(geolocalizationQuery);
         
-        var latlon = null;
-
-        latlonRes.then(response => {
-            latlon = response;
-        
-            latlon = findLatLonInDatabase(geolocalizationQuery);
-            
-            if(latlon) {
-                cacheConnection.add(geolocalizationQuery, latlon);
-            }
-            
-            latlon = findLatLonByExternalApi(geolocalizationQuery);
-            
-            if(latlon) {
-                cacheConnection.add(geolocalizationQuery, latlon);
-                saveInDatabase(geolocalizationQuery, latlon[0], latlon[1]);
-            }
-
-            if(latlon) {
-                return latlon;
-            }
-        });
-
         if(latlon) {
             return latlon;
         }
+
+        latlon = await this.findLatLonInDatabase(geolocalizationQuery);
+        
+        if(latlon) {
+            await this.addToCache(geolocalizationQuery, latlon);
+            return latlon;
+        }
+        
+        latlon = this.findLatLonByExternalApi(geolocalizationQuery);
+        
+        if(latlon) {
+            await this.addToCache(geolocalizationQuery, latlon);
+            await this.saveInDatabase(geolocalizationQuery, latlon.latitude, latlon.longitude);
+        }
+
+        return latlon;
     }
 
     findLatLonByExternalApi(geolocalizationQuery) {
-        var latitude = Math.random() * (max - min) + min;
-        var longitude = Math.random() * (max - min) + min;
+        var latitude = Math.random() * (180 - 1) + 1;
+        var longitude = Math.random() * (180 - 1) + 1;
         return {
             latitude,
             longitude
@@ -58,32 +51,47 @@ class GeolocalizeService {
         this.redisGeolocalizationApiResultCache.shutdown();
     }
     
-    findLatLonInDatabase(geolocalizationQuery) {
-        var geolocalizationApiResult = this.geolocalizationApiResultDao.findByQuery(geolocalizationQuery);
+    async findLatLonInDatabase(geolocalizationQuery) {
+        var geolocalizationApiResult = await this.geolocalizationApiResultDao.findByQuery(geolocalizationQuery);
+        if(!geolocalizationApiResult) {
+            return null;
+        }
         return {
             longitude: geolocalizationApiResult.longitude, 
             latitude: geolocalizationApiResult.latitude
         };
     }
     
-    saveInDatabase(geolocalizationQuery, latitude, longitude) {
-        geolocalizationApiResult = {
+    async saveInDatabase(geolocalizationQuery, latitude, longitude) {
+        const geolocalizationApiResult = {
             query: geolocalizationQuery, 
             latitude,
             longitude,
-            expireAt: getDatabaseExpireAt(), 
+            expireAt: this.getDatabaseExpireAt(), 
         }
-        this.geolocalizationApiResultDao.save(geolocalizationApiResult);
+        await this.geolocalizationApiResultDao.save(geolocalizationApiResult);
     }
     
     getDatabaseExpireAt() {
-        var current = new Date();
-        var year = current.getFullYear() + this.dateExpirationConfig.amountYears;
-        var month = current.getMonth() + this.dateExpirationConfig.amountMonths;
-        var day = current.getDate() + this.dateExpirationConfig.amountDays;
-        var expireAt = new Date(year, month, day);
+        var expireAt = new Date();
+        expireAt.setYear(expireAt.getFullYear() + this.dateExpirationConfig.amountYears);
+        expireAt.setMonth((expireAt.getMonth() + 1) + this.dateExpirationConfig.amountMonths);
+        expireAt.setDate(expireAt.getDate() + this.dateExpirationConfig.amountDays);
         return expireAt;
+    }
+    
+    async addToCache(geolocalizationQuery, latlon) {
+        await this.redisGeolocalizationApiResultCache.add(geolocalizationQuery, JSON.stringify(latlon));
+    }
+
+    async getFromCache(geolocalizationQuery) {
+        var response = await this.redisGeolocalizationApiResultCache.get(geolocalizationQuery);
+        if(response) {
+            return JSON.parse(response);
+        }
+        return null;
     }
 }
 
 module.exports = GeolocalizeService;
+

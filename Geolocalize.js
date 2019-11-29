@@ -3,7 +3,7 @@ const GeolocalizeService = require('./service/GeolocalizeService');
 const CassandraGeolocalizationApiResultDao = require('./dao/CassandraGeolocalizationApiResultDao');
 const RedisGeolocalizationApiResultCache = require('./dao/RedisGeolocalizationApiResultCache');
 
-function geolocalize(env, event) {
+async function geolocalize(env, event) {
     const geolocalizationApiResultDao = new CassandraGeolocalizationApiResultDao(
         env.databaseServerAddress, 
         env.databaseUser, env.databasePass);
@@ -19,16 +19,15 @@ function geolocalize(env, event) {
         redisGeolocalizationApiResultCache,
         mapsApiKey,
         {
-            amountYear: 1,
+            amountYears: 1,
             amountMonths: 2,
             amountDays: 3,
         });
 
     const geolocalizationQuery = event.geolocalizationQuery;
 
-    const latlon = geolocalizeService.geolocalize(geolocalizationQuery);
+    var latlon = await geolocalizeService.geolocalize(geolocalizationQuery);
     geolocalizeService.shutdown();
-
     return latlon;
 }
 
@@ -41,9 +40,16 @@ const env = {
     mapsApiKey: 'key',
 }
 
-const event = {
-    geolocalizationQuery: process.argv[2],
+var localizationQuery = process.argv[2];
+
+if(!localizationQuery) {
+    localizationQuery = '?query';
 }
 
-var latlon = geolocalize(env, event);
-console.log(JSON.stringify(latlon));
+const event = {
+    geolocalizationQuery: localizationQuery,
+}
+
+geolocalize(env, event).then(latlon => {
+    console.log(JSON.stringify(latlon));
+});
