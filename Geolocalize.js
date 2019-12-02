@@ -1,28 +1,16 @@
 "use strict";
 const GeolocalizeService = require('./service/GeolocalizeService');
-const CassandraGeolocalizationApiResultDao = require('./dao/CassandraGeolocalizationApiResultDao');
-const RedisGeolocalizationApiResultCache = require('./dao/RedisGeolocalizationApiResultCache');
+const CacheGeolocaliztionResultService = require('./service/CacheGeolocaliztionResultService');
+const TypeCacheEnum = require('./domain/TypeCache');
 
 async function geolocalize(env, event) {
-    const geolocalizationApiResultDao = new CassandraGeolocalizationApiResultDao(
-        env.databaseServerAddress, 
-        env.databaseUser, env.databasePass);
-
-    const redisGeolocalizationApiResultCache = new RedisGeolocalizationApiResultCache(
-        env.cacheServerAddress, 
-        env.cacheServerPass);
-        
     const mapsApiKey = env.mapsApiKey;
 
+    const cacheGeolocaliztionResultService = new CacheGeolocaliztionResultService(env, event.typeCache);
+
     const geolocalizeService = new GeolocalizeService(
-        geolocalizationApiResultDao, 
-        redisGeolocalizationApiResultCache,
-        mapsApiKey,
-        {
-            amountYears: 1,
-            amountMonths: 2,
-            amountDays: 3,
-        });
+        cacheGeolocaliztionResultService, 
+        mapsApiKey);
 
     const geolocalizationQuery = event.geolocalizationQuery;
 
@@ -38,6 +26,10 @@ const env = {
     cacheServerAddress: '127.0.0.1',
     cacheServerPass: 'pass',
     mapsApiKey: 'key',
+    cacheExpirationInSeconds: 60,
+    expireDatabaseYears: 1,
+    expireDatabaseMonths: 2,
+    expireDatabaseDays: 3,
 }
 
 var localizationQuery = process.argv[2];
@@ -48,6 +40,7 @@ if(!localizationQuery) {
 
 const event = {
     geolocalizationQuery: localizationQuery,
+    typeCache: TypeCacheEnum.MEMORY_AND_PERSISTENT_CACHE,
 }
 
 geolocalize(env, event).then(latlon => {

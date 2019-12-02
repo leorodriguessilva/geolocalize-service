@@ -4,7 +4,8 @@ const { promisify } = require('util');
 
 class RedisGeolocalizationApiResultCache {
 
-    constructor(hostAddress, pass) {
+    constructor(hostAddress, pass, expireTimeSeconds) {
+        this.expireTimeSeconds = expireTimeSeconds;
         this.client = redis.createClient({
             host: hostAddress,
             password: pass,
@@ -26,7 +27,7 @@ class RedisGeolocalizationApiResultCache {
 
     async add(key, value) {
         try {
-            await this.addAsync(key, value, 'EX', 60);
+            await this.addAsync(key, value, 'EX', this.expireTimeSeconds);
         } catch(ex) {
             console.log(ex);
         }
