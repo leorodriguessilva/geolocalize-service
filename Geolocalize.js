@@ -1,9 +1,10 @@
 "use strict";
 const GeolocalizeService = require('./service/GeolocalizeService');
 const CacheGeolocaliztionResultService = require('./service/CacheGeolocaliztionResultService');
-const TypeCacheEnum = require('./domain/TypeCache');
+const Event = require('./domain/MockedEvent');
+const Environment = require('./domain/MockedEnvironment');
 
-async function geolocalize(env, event) {
+async function geolocalize(event, env) {
     const mapsApiKey = env.mapsApiKey;
 
     const cacheGeolocaliztionResultService = new CacheGeolocaliztionResultService(env, event.typeCache);
@@ -19,30 +20,23 @@ async function geolocalize(env, event) {
     return latlon;
 }
 
-const env = {
-    databaseServerAddress: '127.0.0.1',
-    databaseUser: 'user',
-    databasePass: 'pass',
-    cacheServerAddress: '127.0.0.1',
-    cacheServerPass: 'pass',
-    mapsApiKey: 'key',
-    cacheExpirationInSeconds: 60,
-    expireDatabaseYears: 1,
-    expireDatabaseMonths: 2,
-    expireDatabaseDays: 3,
-}
+const env = Environment;
+
+const event = Event;
 
 var localizationQuery = process.argv[2];
+var typeCache = process.argv[3];
 
-if(!localizationQuery) {
-    localizationQuery = '?query';
+if(localizationQuery) {
+    event.geolocalizationQuery = localizationQuery;
 }
 
-const event = {
-    geolocalizationQuery: localizationQuery,
-    typeCache: TypeCacheEnum.MEMORY_AND_PERSISTENT_CACHE,
+if(typeCache) {
+    event.typeCache = new Number(typeCache);
 }
 
-geolocalize(env, event).then(latlon => {
+module.exports.handler = geolocalize;
+
+geolocalize(event, env).then(latlon => {
     console.log(JSON.stringify(latlon));
 });

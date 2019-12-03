@@ -11,8 +11,8 @@ class CacheGeolocaliztionResultService {
         typeCache) {
         this.environmentConfig = environmentConfig;
         var connectionCreations = this.mapDatabaseAndCacheByType();
-        var daoCreationFunc = connectionCreations.get(typeCache);
-        daoCreationFunc(this);
+        var daoCreationCallback = connectionCreations.get(typeCache);
+        daoCreationCallback(this);
     }
 
     async saveCache(geolocalizationQuery, latlon) { 
@@ -71,21 +71,25 @@ class CacheGeolocaliztionResultService {
     }
 
     createNoCachedDao(caller) {
+        console.log('Using no cache for this call');
         caller.createNoCachedAccess();
         caller.createNoPersistentDao();
     }
 
     createMemoryCachedDao(caller) {
+        console.log('Using only in memory cache for this call');
         caller.createCachedAccess();
         caller.createNoPersistentDao();
     }
 
     createPersistentCachedDao(caller) {
+        console.log('Using only in persistent cache for this call');
         caller.createNoCachedAccess();
         caller.createPersistentDao();
     }
 
     createMemoryAndPersistentCachedDao(caller) {
+        console.log('Using in memory and persistent cache for this call');
         caller.createCachedAccess();
         caller.createPersistentDao();
     }
