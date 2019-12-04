@@ -9,6 +9,7 @@ const Environment = {
     expireDatabaseYears: 1,
     expireDatabaseMonths: 2,
     expireDatabaseDays: 3,
+    amountQueriesProcessing: 100,
 }
 
 module.exports = Environment;

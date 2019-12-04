@@ -13,30 +13,48 @@ async function geolocalize(event, env) {
         cacheGeolocaliztionResultService, 
         mapsApiKey);
 
-    const geolocalizationQuery = event.geolocalizationQuery;
+    const amountQueriesProcessing = env.amountQueriesProcessing;
+    const geolocalizationQueries = event.geolocalizationQueries;
+    const resultQueries = [];
+    const queriesNotProcessed = [];
+    
+    for (var i = 0; i < geolocalizationQueries.length; i++) {
+        const geolocalizationQuery = geolocalizationQueries[i];
+        if (i >= amountQueriesProcessing) {
+            queriesNotProcessed[index] = geolocalizationQuery;
+            continue;
+        }
 
-    var latlon = await geolocalizeService.geolocalize(geolocalizationQuery);
+        var latlon = await geolocalizeService.geolocalize(geolocalizationQuery);
+        resultQueries[geolocalizationQuery] = latlon;
+    }
+
     geolocalizeService.shutdown();
-    return latlon;
+
+    if(queriesNotProcessed.length > 0) {
+        console.log(`Reached max limit of queries of ${amountQueriesProcessing} ignoring queries ${JSON.stringify(queriesNotProcessed)}`);
+    }
+
+    return resultQueries;
 }
 
 const env = Environment;
 
 const event = Event;
 
-var localizationQuery = process.argv[2];
-var typeCache = process.argv[3];
+var typeCache = process.argv[2];
+var localizationQueries = JSON.parse(process.argv[3]);
 
-if(localizationQuery) {
-    event.geolocalizationQuery = localizationQuery;
+if(localizationQueries) {
+    event.geolocalizationQueries = localizationQueries;
 }
 
 if(typeCache) {
-    event.typeCache = new Number(typeCache);
+    event.typeCache = parseInt(typeCache);
 }
 
 module.exports.handler = geolocalize;
 
-geolocalize(event, env).then(latlon => {
-    console.log(JSON.stringify(latlon));
+geolocalize(event, env).then(resultQueries => {
+    console.log(JSON.stringify(resultQueries));
 });
