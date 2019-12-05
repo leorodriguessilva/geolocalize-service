@@ -56,5 +56,5 @@ if(typeCache) {
 module.exports.handler = geolocalize;
 
 geolocalize(event, env).then(resultQueries => {
-    console.log(JSON.stringify(resultQueries));
+    console.log(Object.entries(resultQueries));
 });
