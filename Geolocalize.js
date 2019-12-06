@@ -1,20 +1,18 @@
 "use strict";
 const GeolocalizeService = require('./service/GeolocalizeService');
 const CacheGeolocaliztionResultService = require('./service/CacheGeolocaliztionResultService');
-const Event = require('./domain/MockedEvent');
-const Environment = require('./domain/MockedEnvironment');
 
-async function geolocalize(event, env) {
-    const mapsApiKey = env.mapsApiKey;
+async function geolocalize(event) {
+    const mapsApiKey = process.env.mapsApiKey;
 
-    const cacheGeolocaliztionResultService = new CacheGeolocaliztionResultService(env, event.typeCache);
+    const cacheGeolocaliztionResultService = new CacheGeolocaliztionResultService(process.env, event.typeCache);
 
     const geolocalizeService = new GeolocalizeService(
         cacheGeolocaliztionResultService, 
         mapsApiKey);
 
-    const amountQueriesProcessing = env.amountQueriesProcessing;
-    const geolocalizationQueries = event.geolocalizationQueries;
+    const amountQueriesProcessing = process.env.amountQueriesProcessing;
+    const geolocalizationQueries = event.queries;
     const resultQueries = [];
     const queriesNotProcessed = [];
     
@@ -35,26 +33,12 @@ async function geolocalize(event, env) {
         console.log(`Reached max limit of queries of ${amountQueriesProcessing} ignoring queries ${JSON.stringify(queriesNotProcessed)}`);
     }
 
-    return resultQueries;
-}
+    const response = {
+        statusCode: 200,
+        ...resultQueries,
+    }
 
-const env = Environment;
-
-const event = Event;
-
-var typeCache = process.argv[2];
-var localizationQueries = JSON.parse(process.argv[3]);
-
-if(localizationQueries) {
-    event.geolocalizationQueries = localizationQueries;
-}
-
-if(typeCache) {
-    event.typeCache = parseInt(typeCache);
+    return response;
 }
 
 module.exports.handler = geolocalize;
-
-geolocalize(event, env).then(resultQueries => {
-    console.log(Object.entries(resultQueries));
-});

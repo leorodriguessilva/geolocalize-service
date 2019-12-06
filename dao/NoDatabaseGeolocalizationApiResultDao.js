@@ -6,6 +6,8 @@ class NoDatabaseGeolocalizationApiResultDao {
 
     async save(geolocalizationApiResult) { }
 
+    async delete(query) { }
+
     async findByQuery(geolocalizationQuery) { }
 
     shutdown() { }

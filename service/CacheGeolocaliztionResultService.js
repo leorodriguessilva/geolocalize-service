@@ -1,6 +1,8 @@
 const TypeCacheEnum = require('../domain/TypeCache');
+const DynamoDBGeolocalizationApiResultDao = require('../dao/DynamoDBGeolocalizationApiResultDao');
 const CassandraGeolocalizationApiResultDao = require('../dao/CassandraGeolocalizationApiResultDao');
 const RedisGeolocalizationApiResultCache = require('../dao/RedisGeolocalizationApiResultCache');
+const GeolocalizationApiResultDaoLogger = require('../dao/GeolocalizationApiResultDaoLogger');
 const NoDatabaseGeolocalizationApiResultDao = require('../dao/NoDatabaseGeolocalizationApiResultDao');
 const NoGeolocalizationApiResultCache = require('../dao/NoGeolocalizationApiResultCache');
 
@@ -110,10 +112,14 @@ class CacheGeolocaliztionResultService {
     }
 
     createPersistentDao() {
-        this.geolocalizationApiResultDao = new CassandraGeolocalizationApiResultDao(
+        const wrapped = new CassandraGeolocalizationApiResultDao(
             this.environmentConfig.databaseServerAddress, 
             this.environmentConfig.databaseUser, 
             this.environmentConfig.databasePass);
+        if (this.environmentConfig.useDynamoDB) {
+            wrapped = new DynamoDBGeolocalizationApiResultDao(this.environmentConfig.AWS_DEFAULT_REGION);
+        }
+        this.geolocalizationApiResultDao = new GeolocalizationApiResultDaoLogger(wrapped);
     }
 }
 

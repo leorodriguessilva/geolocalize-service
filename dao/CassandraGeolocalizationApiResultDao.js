@@ -26,16 +26,14 @@ class CassandraGeolocalizationApiResultDao {
             geolocalizationApiResult.expireAt, 
         ];
         await this.client.execute(query, params, { prepare: true });
-        console.log(`Added a new GeolocalizationApiResult for query ${geolocalizationApiResult.query}`);
     }
 
     async delete(query) {
-        const query = 'DELETE FROM GeolocalizationApiResult WHERE query = ?'; 
+        const deleteQuery = 'DELETE FROM GeolocalizationApiResult WHERE query = ?'; 
         const params = [ 
             query, 
         ];
-        await this.client.execute(query, params, { prepare: true });
-        console.log(`Removed expired GeolocalizationApiResult for query ${geolocalizationApiResult.query}`);
+        await this.client.execute(deleteQuery, params, { prepare: true });
     }
 
     async findByQuery(geolocalizationQuery) {
@@ -56,7 +54,6 @@ class CassandraGeolocalizationApiResultDao {
             return null;
         }
 
-        console.log(`Retrieved GeolocalizationApiResult from database by query ${geolocalizationApiResult.query}`);
         return geolocalizationApiResult;
     }
 
