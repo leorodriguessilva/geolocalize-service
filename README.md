@@ -1,18 +1,18 @@
 # geolocalize-service
-Code for a fuction to be runned as serverless,  
-this project is made of calling mapping api to  
-retrieve the longitude and latitude, and cache 
-the results into a distributed cache, and in a  
-consistent hashing, performatic and scalable database.  
 
-This project is made in javascript, to be runned at  nodejs server.  
+Geocalize service is a solution based on an API
+aimed to retrieve retrieve latitude and longitude information
+by using a context key. The results are then mapped into a distributed
+cache and made available for further requests.
 
-Soon i will put here a document describing the system design.
+This project is coded in javascript and can be executed by a nodejs server.  
+
+Soon I will create a document describing the system design.
 
 
 ## Dependencies
 
-This a nodejs project, so must have installled `npm` package manager, to run its dependencies.
+To run the project dependencies, you must have installed `npm` package manager.
 
 ## Running
 
