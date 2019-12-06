@@ -19,7 +19,7 @@ async function geolocalize(event) {
     for (var i = 0; i < geolocalizationQueries.length; i++) {
         const geolocalizationQuery = geolocalizationQueries[i];
         if (i >= amountQueriesProcessing) {
-            queriesNotProcessed[index] = geolocalizationQuery;
+            queriesNotProcessed[i] = geolocalizationQuery;
             continue;
         }
 
@@ -42,3 +42,4 @@ async function geolocalize(event) {
 }
 
 module.exports.handler = geolocalize;
+module.exports = geolocalize;

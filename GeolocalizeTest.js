@@ -6,17 +6,19 @@ const env = Environment;
 
 const event = Event;
 
+process.env = { ...env};
+
 var typeCache = process.argv[2];
-var localizationQueries = JSON.parse(process.argv[3]);
+var localizationQueries = process.argv[3];
 
 if(localizationQueries) {
-    event.queries = localizationQueries;
+    event.queries = JSON.parse(localizationQueries);
 }
 
 if(typeCache) {
     event.typeCache = parseInt(typeCache);
 }
 
-geolocalize(event, env).then(resultQueries => {
+geolocalize(event).then(resultQueries => {
     console.log(Object.entries(resultQueries));
 });

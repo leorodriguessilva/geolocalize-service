@@ -107,6 +107,7 @@ class CacheGeolocaliztionResultService {
     createCachedAccess() {
         this.geolocalizationApiResultCache = new RedisGeolocalizationApiResultCache(
             this.environmentConfig.cacheServerAddress, 
+            this.environmentConfig.cacheServerPort, 
             this.environmentConfig.cacheServerPass,
             this.environmentConfig.cacheExpirationInSeconds);
     }
