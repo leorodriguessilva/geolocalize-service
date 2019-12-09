@@ -1,11 +1,11 @@
 "use strict";
 const GeolocalizeService = require('./service/GeolocalizeService');
-const CacheGeolocaliztionResultService = require('./service/CacheGeolocaliztionResultService');
+const CacheGeolocalizationResultService = require('./service/CacheGeolocalizationResultService');
 
 async function geolocalize(event) {
     const mapsApiKey = process.env.mapsApiKey;
 
-    const cacheGeolocaliztionResultService = new CacheGeolocaliztionResultService(process.env, event.typeCache);
+    const cacheGeolocaliztionResultService = new CacheGeolocalizationResultService(process.env, event.typeCache);
 
     const geolocalizeService = new GeolocalizeService(
         cacheGeolocaliztionResultService, 
@@ -42,4 +42,3 @@ async function geolocalize(event) {
 }
 
 module.exports.handler = geolocalize;
-module.exports = geolocalize;

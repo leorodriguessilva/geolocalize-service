@@ -2,63 +2,71 @@ const AWS = require('aws-sdk');
 
 class DynamoDBGeolocalizationApiResultDao {
     
-    constructor (awsRegion) {
+    constructor (awsRegion, tableName) {
         AWS.config.update({ region: awsRegion });
-        this.client = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
+        AWS.config.logger = console;
+        this.tableName = tableName;
+        this.client = new AWS.DynamoDB.DocumentClient();
     }
 
     _getTableName() {
-        return "GeolocalizationApiResult";
+        return this.tableName;
     }
 
     async save(geolocalizationApiResult) { 
         const params = {
             TableName: this._getTableName(),
             Item: {
-              'query' : { S: geolocalizationApiResult.query },
-              'latitude' : { N: geolocalizationApiResult.latitude.toString() },
-              'longitude' : { N: geolocalizationApiResult.longitude.toString() },
-              'expireAt' : { S: geolocalizationApiResult.expireAt.toString() }
+              query :  geolocalizationApiResult.query ,
+              latitude : geolocalizationApiResult.latitude,
+              longitude : geolocalizationApiResult.longitude,
+              expireAt : geolocalizationApiResult.expireAt.toISOString(),
             }
-          };
-
-        this.client.putItem(params, function(err) {
-            if (err) {
-                console.log("Error", err);
-            }
-        });
+        };
+        
+        let response = true;
+        try {
+            await this.client.put(params).promise();
+        } catch(err) {
+            response = false;
+            console.log("Error", err);
+        }
+        return response;
     }
 
     async delete(query) { 
         const params = {
             TableName: this._getTableName(),
             Key: {
-                'query': { S: query }
+                query
             }
         };
-          
-        this.client.deleteItem(params, function(err, data) {
-            if (err) {
-                console.log("Error", err);
-            }
-        });
+        
+        let response = true;
+        try {
+            await this.client.delete(params).promise();
+        } catch(err) {
+            response = false;
+            console.log("Error", err);
+        }
+        return response;
     }
 
     async findByQuery(geolocalizationQuery) { 
         const params = {
             TableName: this._getTableName(),
             Key: {
-              'query': { S: geolocalizationQuery }
+              query: geolocalizationQuery
             },
         };
 
-        this.client.getItem(params, function(err, data) {
-            if (err) {
-              console.log("Error", err);
-              return null;
-            }
-            return data.Item;
-        });
+        let response = null;
+        try {
+            response = await this.client.get(params).promise();
+        } catch(err) {
+            console.log("Error", err);
+        }
+        return response;
     }
 
     shutdown() { }

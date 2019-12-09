@@ -1,5 +1,4 @@
 "use strict";
-const RedisClustr = require('redis-clustr');
 const RedisClient = require("redis");
 const { promisify } = require('util');
 
@@ -7,18 +6,7 @@ class RedisGeolocalizationApiResultCache {
 
     constructor(hostAddress, hostPort, pass, expireTimeSeconds) {
         this.expireTimeSeconds = expireTimeSeconds;
-        this.client = new RedisClustr({
-            servers: [
-                {
-                    host: hostAddress,
-                    port: hostPort,
-                    password: pass,
-                }
-            ],
-            createClient: function (port, host, pass) {
-                return RedisClient.createClient(port, host, pass);
-            }
-        });
+        this.client = RedisClient.createClient(hostAddress + ":" + hostPort);
         this.client.on("connect", function () {
             console.log("Connected to the cache server");
         });

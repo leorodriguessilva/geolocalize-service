@@ -10,6 +10,7 @@ const Environment = {
     expireDatabaseMonths: 2,
     expireDatabaseDays: 3,
     amountQueriesProcessing: 100,
+    GEOLOCALIZATION_API_RESULT_TABLE: 'geolocalizationApiResult'
 }
 
 module.exports = Environment;

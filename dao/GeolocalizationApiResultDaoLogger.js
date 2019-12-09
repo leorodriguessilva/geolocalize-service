@@ -7,19 +7,23 @@ class GeolocalizationApiResultDaoLoggerWrapper {
     }
 
     async save(geolocalizationApiResult) {
-        this.wrapped.save(geolocalizationApiResult);
-        console.log(`Added a new GeolocalizationApiResult for query ${geolocalizationApiResult.query}`);
+        let response = await this.wrapped.save(geolocalizationApiResult);
+        if(response) {
+            console.log(`Added a new GeolocalizationApiResult for query ${geolocalizationApiResult.query}`);
+        }
     }
 
     async delete(query) {    
-        this.wrapped.delete(query);
-        console.log(`Removed expired GeolocalizationApiResult for query ${query}`);
+        let response = await this.wrapped.delete(query);
+        if(response) {
+            console.log(`Removed expired GeolocalizationApiResult for query ${query}`);
+        }
     }
 
     async findByQuery(geolocalizationQuery) {
-        const result = this.wrapped.findByQuery(geolocalizationQuery);
+        const result = await this.wrapped.findByQuery(geolocalizationQuery);
         if (result) {
-            console.log(`Retrieved GeolocalizationApiResult from database by query ${geolocalizationQuery.query}`);
+            console.log(`Retrieved GeolocalizationApiResult from database by query ${geolocalizationQuery}`);
         }
         return result;
     }

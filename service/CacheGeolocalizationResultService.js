@@ -6,7 +6,7 @@ const GeolocalizationApiResultDaoLogger = require('../dao/GeolocalizationApiResu
 const NoDatabaseGeolocalizationApiResultDao = require('../dao/NoDatabaseGeolocalizationApiResultDao');
 const NoGeolocalizationApiResultCache = require('../dao/NoGeolocalizationApiResultCache');
 
-class CacheGeolocaliztionResultService {
+class CacheGeolocalizationResultService {
 
     constructor(
         environmentConfig,
@@ -113,15 +113,18 @@ class CacheGeolocaliztionResultService {
     }
 
     createPersistentDao() {
-        const wrapped = new CassandraGeolocalizationApiResultDao(
+        let wrapped = new CassandraGeolocalizationApiResultDao(
             this.environmentConfig.databaseServerAddress, 
             this.environmentConfig.databaseUser, 
-            this.environmentConfig.databasePass);
+            this.environmentConfig.databasePass,
+            this.environmentConfig.GEOLOCALIZATION_API_RESULT_TABLE);
         if (this.environmentConfig.useDynamoDB) {
-            wrapped = new DynamoDBGeolocalizationApiResultDao(this.environmentConfig.AWS_DEFAULT_REGION);
+            wrapped = new DynamoDBGeolocalizationApiResultDao(
+                this.environmentConfig.AWS_DEFAULT_REGION, 
+                this.environmentConfig.GEOLOCALIZATION_API_RESULT_TABLE);
         }
         this.geolocalizationApiResultDao = new GeolocalizationApiResultDaoLogger(wrapped);
     }
 }
 
-module.exports = CacheGeolocaliztionResultService;
+module.exports = CacheGeolocalizationResultService;
