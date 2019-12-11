@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 const cassandra = require('cassandra-driver');
 
 class CassandraGeolocalizationApiResultDao {

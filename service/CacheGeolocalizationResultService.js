@@ -5,6 +5,7 @@ const RedisGeolocalizationApiResultCache = require('../dao/RedisGeolocalizationA
 const GeolocalizationApiResultDaoLogger = require('../dao/GeolocalizationApiResultDaoLogger');
 const NoDatabaseGeolocalizationApiResultDao = require('../dao/NoDatabaseGeolocalizationApiResultDao');
 const NoGeolocalizationApiResultCache = require('../dao/NoGeolocalizationApiResultCache');
+const isBeforeNow = require('../util/Util');
 
 class CacheGeolocalizationResultService {
 
@@ -18,7 +19,7 @@ class CacheGeolocalizationResultService {
     }
 
     async saveCache(geolocalizationQuery, latlon) { 
-        this.geolocalizationApiResultCache.add(geolocalizationQuery, JSON.stringify(latlon))
+        this.geolocalizationApiResultCache.add(geolocalizationQuery, JSON.stringify(latlon));
     }
 
     async findInCacheByQuery(geolocalizationQuery) { 
@@ -35,7 +36,7 @@ class CacheGeolocalizationResultService {
             latitude,
             longitude,
             expireAt: this.getDatabaseExpireAt(), 
-        }
+        };
         await this.geolocalizationApiResultDao.save(geolocalizationApiResult);
     }
 
@@ -44,6 +45,12 @@ class CacheGeolocalizationResultService {
         if(!geolocalizationApiResult) {
             return null;
         }
+        
+        if(isBeforeNow(geolocalizationApiResult.expireAt)) {
+            this.geolocalizationApiResultDao.delete(geolocalizationApiResult);
+            return null;
+        }
+        
         return {
             longitude: geolocalizationApiResult.longitude, 
             latitude: geolocalizationApiResult.latitude

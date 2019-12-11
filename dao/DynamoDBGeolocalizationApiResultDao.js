@@ -1,5 +1,5 @@
+'use strict';
 const AWS = require('aws-sdk');
-const isEmpty = require('../util/Util');
 
 class DynamoDBGeolocalizationApiResultDao {
     
@@ -67,16 +67,14 @@ class DynamoDBGeolocalizationApiResultDao {
             },
         };
 
-        let response = null;
+        let geolocalizationApiResult = null;
         try {
-            response = await this.client.get(params).promise();
-            if(isEmpty(response)) {
-                return null;
-            }
+            let response = await this.client.get(params).promise();
+            geolocalizationApiResult = response.Item;
         } catch(err) {
             console.log("Error", err);
         }
-        return response;
+        return geolocalizationApiResult;
     }
 
     shutdown() { }

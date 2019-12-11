@@ -1,5 +1,5 @@
-function isEmpty(obj) {
-    return obj.constructor !== Object || Object.entries(obj).length === 0 
+function isBeforeNow(expirationDate) {
+    return expirationDate < Date.now();
 }
 
-module.exports = isEmpty;
+module.exports = isBeforeNow;
