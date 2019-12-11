@@ -1,12 +1,19 @@
 const AWS = require('aws-sdk');
+const isEmpty = require('../util/Util');
 
 class DynamoDBGeolocalizationApiResultDao {
     
-    constructor (awsRegion, tableName) {
-        AWS.config.update({ region: awsRegion });
-        AWS.config.logger = console;
+    constructor (awsRegion, tableName, useConsoleLog) {
+        this.applyConfig(awsRegion, useConsoleLog);
         this.tableName = tableName;
         this.client = new AWS.DynamoDB.DocumentClient();
+    }
+
+    applyConfig(awsRegion, useConsoleLog) {
+        AWS.config.update({ region: awsRegion });
+        if(useConsoleLog) {
+            AWS.config.logger = console;
+        }
     }
 
     _getTableName() {
@@ -63,6 +70,9 @@ class DynamoDBGeolocalizationApiResultDao {
         let response = null;
         try {
             response = await this.client.get(params).promise();
+            if(isEmpty(response)) {
+                return null;
+            }
         } catch(err) {
             console.log("Error", err);
         }
