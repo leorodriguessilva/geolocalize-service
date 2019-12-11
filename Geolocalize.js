@@ -36,7 +36,7 @@ async function geolocalize(event) {
     const response = {
         statusCode: 200,
         ...resultQueries,
-    }
+    };
 
     return response;
 }
