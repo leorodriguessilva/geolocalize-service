@@ -124,11 +124,11 @@ class CacheGeolocalizationResultService {
             this.environmentConfig.databaseServerAddress, 
             this.environmentConfig.databaseUser, 
             this.environmentConfig.databasePass,
-            this.environmentConfig.GEOLOCALIZATION_API_RESULT_TABLE);
+            this.environmentConfig.persistentCacheTable);
         if (this.environmentConfig.useDynamoDB) {
             wrapped = new DynamoDBGeolocalizationApiResultDao(
                 this.environmentConfig.AWS_DEFAULT_REGION, 
-                this.environmentConfig.GEOLOCALIZATION_API_RESULT_TABLE);
+                this.environmentConfig.persistentCacheTable);
         }
         this.geolocalizationApiResultDao = new GeolocalizationApiResultDaoLogger(wrapped);
     }
