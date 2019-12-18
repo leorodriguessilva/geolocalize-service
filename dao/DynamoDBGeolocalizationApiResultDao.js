@@ -25,8 +25,7 @@ class DynamoDBGeolocalizationApiResultDao {
             TableName: this._getTableName(),
             Item: {
               query :  geolocalizationApiResult.query ,
-              latitude : geolocalizationApiResult.latitude,
-              longitude : geolocalizationApiResult.longitude,
+              locations : geolocalizationApiResult.locations,
               expireAt : geolocalizationApiResult.expireAt.toISOString(),
             }
         };
