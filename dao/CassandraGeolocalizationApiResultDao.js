@@ -19,11 +19,10 @@ class CassandraGeolocalizationApiResultDao {
     }
 
     async save(geolocalizationApiResult) {
-        const query = `INSERT INTO ${this.tableName} (query, longitude, latitude, expireAt) VALUES (?, ?, ?, ?)`; 
+        const query = `INSERT INTO ${this.tableName} (query, locations, expireAt) VALUES (?, ?, ?)`; 
         const params = [ 
             geolocalizationApiResult.query, 
-            geolocalizationApiResult.longitude,
-            geolocalizationApiResult.latitude,
+            geolocalizationApiResult.locations,
             geolocalizationApiResult.expireAt, 
         ];
         await this.client.execute(query, params, { prepare: true });
@@ -47,8 +46,7 @@ class CassandraGeolocalizationApiResultDao {
         }
         const geolocalizationApiResult = {
             query: result.rows[0].query,
-            longitude: result.rows[0].longitude,
-            latitude: result.rows[0].latitude,
+            locations: result.rows[0].locations,
             expireAt: result.rows[0].expireAt,
         };
 
