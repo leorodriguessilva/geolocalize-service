@@ -1,43 +1,39 @@
 "use strict";
+const GeocodeServiceFactory = require('../geocode/GeocodeServiceFactory');
 
 class GeolocalizeService {
 
-    constructor(cacheGeolocaliztionResultService, mapsApiKey) {
-        this.cacheGeolocaliztionResultService = cacheGeolocaliztionResultService;
-        this.mapsApiKey = mapsApiKey;
+    constructor(cacheGeolocalizationResultService, env) {
+        this.cacheGeolocalizationResultService = cacheGeolocalizationResultService;
+        this.geocodeService = new GeocodeServiceFactory(env.geocodeProvider, env);
     }
     
     async geolocalize(geolocalizationQuery) {
-        var latlon = await this.cacheGeolocaliztionResultService.findInCacheByQuery(geolocalizationQuery);
+        var locations = await this.cacheGeolocalizationResultService.findInCacheByQuery(geolocalizationQuery);
         
-        if(latlon) {
-            return latlon;
+        if(locations) {
+            return locations;
         }
 
-        latlon = await this.cacheGeolocaliztionResultService.findInDatabaseByQuery(geolocalizationQuery);
+        locations = await this.cacheGeolocalizationResultService.findInDatabaseByQuery(geolocalizationQuery);
         
-        if(latlon) {
-            await this.cacheGeolocaliztionResultService.saveCache(geolocalizationQuery, latlon);
-            return latlon;
+        if(locations) {
+            await this.cacheGeolocalizationResultService.saveCache(geolocalizationQuery, locations);
+            return locations;
         }
         
-        latlon = this.findLatLonByExternalApi(geolocalizationQuery);
+        locations = this.findLocationsByExternalApi(geolocalizationQuery);
         
-        if(latlon) {
-            await this.cacheGeolocaliztionResultService.saveCache(geolocalizationQuery, latlon);
-            await this.cacheGeolocaliztionResultService.saveDatabase(geolocalizationQuery, latlon.latitude, latlon.longitude);
+        if(locations) {
+            await this.cacheGeolocalizationResultService.saveCache(geolocalizationQuery, locations);
+            await this.cacheGeolocalizationResultService.saveDatabase(geolocalizationQuery, locations.latitude, locations.longitude);
         }
 
-        return latlon;
+        return locations;
     }
 
-    findLatLonByExternalApi(geolocalizationQuery) {
-        var latitude = Math.random() * (180 - 1) + 1;
-        var longitude = Math.random() * (180 - 1) + 1;
-        return {
-            latitude,
-            longitude
-        }
+    async findLocationsByExternalApi(geolocalizationQuery) {
+        return await this.geocodeService.geocode(geolocalizationQuery);
     }
 
     shutdown() {
