@@ -3,13 +3,11 @@ const GeolocalizeService = require('./service/GeolocalizeService');
 const CacheGeolocalizationResultService = require('./service/CacheGeolocalizationResultService');
 
 async function geolocalize(event) {
-    const mapsApiKey = process.env.mapsApiKey;
-
     const cacheGeolocaliztionResultService = new CacheGeolocalizationResultService(process.env, event.typeCache);
 
     const geolocalizeService = new GeolocalizeService(
         cacheGeolocaliztionResultService, 
-        mapsApiKey);
+        process.env);
 
     const amountQueriesProcessing = process.env.amountQueriesProcessing;
     const geolocalizationQueries = event.queries;
@@ -23,8 +21,8 @@ async function geolocalize(event) {
             continue;
         }
 
-        var latlon = await geolocalizeService.geolocalize(geolocalizationQuery);
-        resultQueries[geolocalizationQuery] = latlon;
+        var locations = await geolocalizeService.geolocalize(geolocalizationQuery);
+        resultQueries[geolocalizationQuery] = locations;
     }
 
     geolocalizeService.shutdown();
