@@ -1,6 +1,5 @@
 const GeocodeProviderEnum = {
-    'FAKE': 0,
-    'GOOGLE': 1,
+    'GOOGLE': 0,
 };
 
 module.exports = GeocodeProviderEnum;
