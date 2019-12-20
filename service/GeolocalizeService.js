@@ -5,7 +5,7 @@ class GeolocalizeService {
 
     constructor(cacheGeolocalizationResultService, env) {
         this.cacheGeolocalizationResultService = cacheGeolocalizationResultService;
-        this.geocodeService = new GeocodeServiceFactory(env.geocodeProvider, env);
+        this.geocodeService = new GeocodeServiceFactory(env.geocodeProvider, env).create();
     }
     
     async geolocalize(geolocalizationQuery) {
@@ -37,7 +37,7 @@ class GeolocalizeService {
     }
 
     shutdown() {
-        this.cacheGeolocaliztionResultService.shutdown();
+        this.cacheGeolocalizationResultService.shutdown();
     }
 }
 
