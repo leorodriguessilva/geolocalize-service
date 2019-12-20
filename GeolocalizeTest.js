@@ -20,5 +20,5 @@ if(typeCache) {
 }
 
 geolocalize(event).then(resultQueries => {
-    console.log(Object.entries(resultQueries));
+    console.log(JSON.stringify(resultQueries));
 });
