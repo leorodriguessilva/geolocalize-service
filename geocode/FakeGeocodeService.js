@@ -11,7 +11,7 @@ class FakeGeocodeService {
         let results = [];
         let amountOfLocations = Math.random() * (this.randomLocationMaxSize - 1) + 1;
         for(var i = 0; i < amountOfLocations; i++) {
-            results.push(_generateRandomLatLon());
+            results.push(this._generateRandomLatLng());
         }
         return results;
     }
