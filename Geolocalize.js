@@ -40,3 +40,4 @@ async function geolocalize(event) {
 }
 
 module.exports.handler = geolocalize;
+module.exports = geolocalize;
