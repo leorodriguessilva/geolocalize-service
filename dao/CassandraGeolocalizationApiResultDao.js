@@ -47,23 +47,14 @@ class CassandraGeolocalizationApiResultDao {
         const geolocalizationApiResult = {
             query: result.rows[0].query,
             locations: result.rows[0].locations,
-            expireAt: result.rows[0].expireAt,
+            expireAt: result.rows[0].expireat.toNumber(),
         };
-
-        if(this.isExpired(geolocalizationApiResult.expireAt)) {
-            this.delete(geolocalizationQuery);
-            return null;
-        }
 
         return geolocalizationApiResult;
     }
 
     shutdown() {
         this.client.shutdown();
-    }
-
-    isExpired(expirationDate) {
-        return expirationDate >= Date.now();
     }
 }
 
