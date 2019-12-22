@@ -1,4 +1,4 @@
-const geolocalize = require("./Geolocalize");
+const geolocalize = require("../../Geolocalize");
 const Event = require('./domain/MockedEvent');
 const Environment = require('./domain/MockedEnvironment');
 

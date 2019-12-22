@@ -1,0 +1,7 @@
+class CacheFactory {
+
+    constructor(typeCache) {
+        
+    }
+
+}

@@ -1,4 +1,4 @@
-const TypeCacheEnum = require('./TypeCache');
+const TypeCacheEnum = require('../../../domain/TypeCache');
 
 const Event = {
     queries: [
