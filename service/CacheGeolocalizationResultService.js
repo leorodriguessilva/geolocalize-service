@@ -30,11 +30,10 @@ class CacheGeolocalizationResultService {
         return null;
     }
 
-    async saveDatabase(geolocalizationQuery, latitude, longitude) {
+    async saveDatabase(geolocalizationQuery, locations) {
         const geolocalizationApiResult = {
             query: geolocalizationQuery, 
-            latitude,
-            longitude,
+            locations,
             expireAt: this.getDatabaseExpireAt(), 
         };
         await this.geolocalizationApiResultDao.save(geolocalizationApiResult);
@@ -51,10 +50,7 @@ class CacheGeolocalizationResultService {
             return null;
         }
         
-        return {
-            longitude: geolocalizationApiResult.longitude, 
-            latitude: geolocalizationApiResult.latitude
-        };
+        return geolocalizationApiResult.locations;
     }
 
     shutdown() {
@@ -67,7 +63,7 @@ class CacheGeolocalizationResultService {
         expireAt.setYear(expireAt.getFullYear() + this.environmentConfig.expireDatabaseYears);
         expireAt.setMonth((expireAt.getMonth() + 1) + this.environmentConfig.expireDatabaseMonths);
         expireAt.setDate(expireAt.getDate() + this.environmentConfig.expireDatabaseDays);
-        return expireAt;
+        return expireAt.getTime();
     }
 
     mapDatabaseAndCacheByType() {

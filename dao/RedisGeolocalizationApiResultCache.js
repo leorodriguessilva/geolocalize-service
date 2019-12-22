@@ -6,7 +6,7 @@ class RedisGeolocalizationApiResultCache {
 
     constructor(hostAddress, hostPort, pass, expireTimeSeconds) {
         this.expireTimeSeconds = expireTimeSeconds;
-        this.client = RedisClient.createClient(hostAddress + ":" + hostPort);
+        this.client = RedisClient.createClient(`${hostAddress}:${hostPort}`);
         this.client.on("connect", function () {
             console.log("Connected to the cache server");
         });

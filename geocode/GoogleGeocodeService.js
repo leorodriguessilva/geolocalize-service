@@ -5,7 +5,8 @@ class GoogleGeocodeService {
 
     constructor(mapsApiKey) {
         this.client = geocodeClientFactory.createClient({
-            key: mapsApiKey
+            key: mapsApiKey,
+            Promise: Promise
         });
     }
 
@@ -14,16 +15,16 @@ class GoogleGeocodeService {
         try {
             response = await this.client.geocode({
                 address: query
-            });
+            }).asPromise();
         } catch(err) {
             console.log("Error when calling google geocode service", err);
         }
-        return response.json.results;
+        return this._parseResponse(response);
     }
 
     _parseResponse(response) {
         let results = [];
-        if(response.status === RESPONSE_OK) {
+        if(response.status == RESPONSE_OK) {
             response.json.results.forEach(place => {
                 results.push(place.geometry.location);
             });

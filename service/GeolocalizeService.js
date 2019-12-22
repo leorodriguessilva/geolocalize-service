@@ -22,11 +22,11 @@ class GeolocalizeService {
             return locations;
         }
         
-        locations = this.findLocationsByExternalApi(geolocalizationQuery);
+        locations = await this.findLocationsByExternalApi(geolocalizationQuery);
         
         if(locations) {
             await this.cacheGeolocalizationResultService.saveCache(geolocalizationQuery, locations);
-            await this.cacheGeolocalizationResultService.saveDatabase(geolocalizationQuery, locations.latitude, locations.longitude);
+            await this.cacheGeolocalizationResultService.saveDatabase(geolocalizationQuery, locations);
         }
 
         return locations;
