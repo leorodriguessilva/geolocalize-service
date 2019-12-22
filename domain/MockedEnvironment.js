@@ -4,7 +4,7 @@ const Environment = {
     databasePass: 'pass',
     cacheServerAddress: 'redis://127.0.0.1',
     cacheServerPass: 'pass',
-    mapsApiKey: 'AIzaSyCm3mEZi5i-7-mYvV8KnO04dfAdt-GEfmo',
+    mapsApiKey: 'key',
     cacheExpirationInSeconds: 60,
     expireDatabaseYears: 1,
     expireDatabaseMonths: 2,
