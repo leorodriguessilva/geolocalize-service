@@ -4,7 +4,7 @@
   "description": "Service to translate addresses into longitude and latitude",
   "main": "Geolocalize.js",
   "scripts": {
-    "test": "test"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -30,5 +30,8 @@
     "cassandra-driver": "^4.3.1",
     "redis": "^2.8.0",
     "redis-clustr": "^1.7.0"
+  },
+  "devDependencies": {
+    "jest": "^24.9.0"
   }
 }
