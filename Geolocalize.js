@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 const DaoFactory = require('./dao/DaoFactory');
 const CacheFactory = require('./dao/CacheFactory');
 const GeocodeServiceFactory = require('./geocode/GeocodeServiceFactory');
