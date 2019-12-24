@@ -1,11 +1,10 @@
-"use strict";
-const GeocodeServiceFactory = require('../geocode/GeocodeServiceFactory');
+'use strict';
 
 class GeolocalizeService {
 
-    constructor(cacheGeolocalizationResultService, env) {
+    constructor(cacheGeolocalizationResultService, geocodeServiceFactory) {
         this.cacheGeolocalizationResultService = cacheGeolocalizationResultService;
-        this.geocodeService = new GeocodeServiceFactory(env.geocodeProvider, env).create();
+        this.geocodeService = geocodeServiceFactory.create();
     }
     
     async geolocalize(geolocalizationQuery) {
