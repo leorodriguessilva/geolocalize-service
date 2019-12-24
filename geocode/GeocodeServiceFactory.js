@@ -1,3 +1,4 @@
+'use strict';
 const GoogleGeocodeService = require('./GoogleGeocodeService');
 const FakeGeocodeService = require('./FakeGeocodeService');
 const GeocodeProviderEnum = require('../domain/GeocodeProvider');
