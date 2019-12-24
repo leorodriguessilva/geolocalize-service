@@ -1,3 +1,4 @@
+'use strict';
 const geocodeClientFactory = require('@google/maps');
 const { RESPONSE_OK } = require('../constants/GeolocalizeConstants');
 
