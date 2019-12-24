@@ -1,5 +1,5 @@
 'use strict';
-const isBeforeNow = require('../util/Util');
+const isBeforeNow = require('../util/DateUtil');
 
 class CacheGeolocalizationResultService {
 
@@ -12,8 +12,8 @@ class CacheGeolocalizationResultService {
         this.geolocalizationApiResultCache = cacheFactory.create();
     }
 
-    async saveCache(geolocalizationQuery, latlon) { 
-        this.geolocalizationApiResultCache.add(geolocalizationQuery, JSON.stringify(latlon));
+    async saveCache(geolocalizationQuery, latlng) { 
+        this.geolocalizationApiResultCache.add(geolocalizationQuery, JSON.stringify(latlng));
     }
 
     async findInCacheByQuery(geolocalizationQuery) { 
