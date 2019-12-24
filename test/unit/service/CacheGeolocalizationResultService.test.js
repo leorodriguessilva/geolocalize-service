@@ -56,29 +56,33 @@ describe('invoking cache geolocalization result service functions', () => {
     test('when saving in database should call dao save database function', () => {
         jest.spyOn(daoMock, 'save');
         const service = new CacheGeolocalizationResultService(mockedEnvConfig, daoFactoryMock, cacheFactoryMock);
-        service.saveDatabase({});
-        expect(daoMock.save).toBeCalled();
+        service.saveDatabase({}).then(() => {
+            expect(daoMock.save).toBeCalled();
+        });
     });
 
     test('when saving in cache should call cache save database function', () => {
         jest.spyOn(cacheMock, 'add');
         const service = new CacheGeolocalizationResultService(mockedEnvConfig, daoFactoryMock, cacheFactoryMock);
-        service.saveCache('query', {});
-        expect(cacheMock.add).toBeCalled();
+        service.saveCache('query', {}).then(() => {
+            expect(cacheMock.add).toBeCalled();
+        });
     });
 
     test('when searching in database should call dao search database function', () => {
         jest.spyOn(daoMock, 'findByQuery');
         const service = new CacheGeolocalizationResultService(mockedEnvConfig, daoFactoryMock, cacheFactoryMock);
-        service.findInDatabaseByQuery('query');
-        expect(daoMock.findByQuery).toBeCalled();
+        service.findInDatabaseByQuery('query').then(() => {
+            expect(daoMock.findByQuery).toBeCalled();
+        });
     });
 
     test('when searching in cache should call cache search database function', () => {
         jest.spyOn(cacheMock, 'get');
         const service = new CacheGeolocalizationResultService(mockedEnvConfig, daoFactoryMock, cacheFactoryMock);
-        service.findInCacheByQuery('query');
-        expect(cacheMock.get).toBeCalled();
+        service.findInCacheByQuery('query').then(() => {
+            expect(cacheMock.get).toBeCalled();
+        });
     });
 
     test('when expired geolocalization result is found searching database should call dao delete function', () => {    
@@ -124,12 +128,12 @@ describe('searching for query', () => {
     });
 
     test('when passing an existent query to search in the cache, should return an object', () => {
-        let result = {
+        let data = {
             query: 'query1',
             locations: [],
             expireAt: new Date().getTime(),
         };
-        cacheMock.get.mockReturnValueOnce(result);
+        cacheMock.get.mockReturnValueOnce(JSON.stringify(data));
         const service = new CacheGeolocalizationResultService(mockedEnvConfig, daoFactoryMock, cacheFactoryMock);
         service.findInCacheByQuery('query1').then((result) => {
             expect(result).toBeTruthy();
@@ -144,12 +148,12 @@ describe('searching for query', () => {
     });
 
     test('when passing an existent query to search in the database, should return an object', () => {
-        let result = {
+        let data = {
             query: 'query1',
             locations: [],
             expireAt: new Date().getTime(),
         };
-        daoMock.findByQuery.mockReturnValueOnce(result);
+        daoMock.findByQuery.mockReturnValueOnce(data);
         const service = new CacheGeolocalizationResultService(mockedEnvConfig, daoFactoryMock, cacheFactoryMock);
         service.findInDatabaseByQuery('query1').then((result) => {
             expect(result).toBeTruthy();
