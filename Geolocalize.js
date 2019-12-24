@@ -1,6 +1,7 @@
 "use strict";
 const DaoFactory = require('./dao/DaoFactory');
 const CacheFactory = require('./dao/CacheFactory');
+const GeocodeServiceFactory = require('./geocode/GeocodeServiceFactory');
 const GeolocalizeService = require('./service/GeolocalizeService');
 const CacheGeolocalizationResultService = require('./service/CacheGeolocalizationResultService');
 
@@ -9,9 +10,11 @@ async function geolocalize(event) {
     const cacheFactory = new CacheFactory(event.typeCache);
     const cacheGeolocaliztionResultService = new CacheGeolocalizationResultService(process.env, daoFactory, cacheFactory);
 
+    const geocodeServiceFactory = new GeocodeServiceFactory(process.env.geocodeProvider, process.env);
+
     const geolocalizeService = new GeolocalizeService(
         cacheGeolocaliztionResultService, 
-        process.env);
+        geocodeServiceFactory);
 
     const amountQueriesProcessing = process.env.amountQueriesProcessing;
     const geolocalizationQueries = event.queries;
