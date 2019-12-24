@@ -1,3 +1,4 @@
+'use strict';
 const isBeforeNow = require('../util/Util');
 
 class CacheGeolocalizationResultService {
@@ -27,7 +28,7 @@ class CacheGeolocalizationResultService {
         const geolocalizationApiResult = {
             query: geolocalizationQuery, 
             locations,
-            expireAt: this.getDatabaseExpireAt(), 
+            expireAt: this._getDatabaseExpireAt(), 
         };
         await this.geolocalizationApiResultDao.save(geolocalizationApiResult);
     }
@@ -51,7 +52,7 @@ class CacheGeolocalizationResultService {
         this.geolocalizationApiResultDao.shutdown(); 
     }
     
-    getDatabaseExpireAt() {
+    _getDatabaseExpireAt() {
         var expireAt = new Date();
         expireAt.setYear(expireAt.getFullYear() + this.environmentConfig.expireDatabaseYears);
         expireAt.setMonth((expireAt.getMonth() + 1) + this.environmentConfig.expireDatabaseMonths);
