@@ -19,4 +19,5 @@ To run the project dependencies, you must have installed `npm` package manager.
 In the root folder run the command:
 
 Update dependencies - `npm install`
+
 Run tests - `npm test`
