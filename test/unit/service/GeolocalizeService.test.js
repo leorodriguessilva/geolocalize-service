@@ -1,4 +1,5 @@
-const GeolocalizeService = require('../../../service/GeolocalizeService');
+'use strict';
+const GeolocalizeService = require('../../../src/service/GeolocalizeService');
 
 const geocodeServiceMock = {
     geocode: jest.fn(),

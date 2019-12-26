@@ -1,11 +1,15 @@
+'use strict';
+
 const NoGeolocalizationApiResultCache = require('./NoGeolocalizationApiResultCache');
 const RedisGeolocalizationApiResultCache = require('./RedisGeolocalizationApiResultCache');
 const TypeCacheEnum = require('../domain/TypeCache');
 
 class CacheFactory {
 
-    constructor(typeCache) {
+    constructor(typeCache, redisClientFactory, cacheExpirationInSeconds) {
         this.typeCache = typeCache;
+        this.redisClientFactory = redisClientFactory;
+        this.cacheExpirationInSeconds = cacheExpirationInSeconds;
     }
 
     create() {
@@ -29,10 +33,10 @@ class CacheFactory {
             return this.geolocalizationApiResultCache
         }
         this.geolocalizationApiResultCache = new RedisGeolocalizationApiResultCache(
-            this.environmentConfig.cacheServerAddress, 
-            this.environmentConfig.cacheServerPort, 
-            this.environmentConfig.cacheServerPass,
-            this.environmentConfig.cacheExpirationInSeconds);
+            this.redisClientFactory,
+            this.cacheExpirationInSeconds, 
+            );
+        this.geolocalizationApiResultCache.connect();
         return this.geolocalizationApiResultCache;
     }
 

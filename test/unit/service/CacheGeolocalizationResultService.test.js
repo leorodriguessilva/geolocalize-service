@@ -1,4 +1,5 @@
-const CacheGeolocalizationResultService = require('../../../service/CacheGeolocalizationResultService');
+'use strict';
+const CacheGeolocalizationResultService = require('../../../src/service/CacheGeolocalizationResultService');
 
 const mockedEnvConfig = {
     expireDatabaseYears: 1,
@@ -38,7 +39,7 @@ describe('instantiate cache geolocalization result service', () => {
         daoFactory.create = jest.fn();
         jest.spyOn(daoFactory, 'create');
         new CacheGeolocalizationResultService(mockedEnvConfig, daoFactory, cacheFactoryMock);
-        expect(daoFactory.create).toHaveBeenCalledTimes(1);
+        expect(daoFactory.create).toBeCalled();
     });
 
     test('should call create function from cache factory ', () => {
@@ -46,7 +47,7 @@ describe('instantiate cache geolocalization result service', () => {
         cacheFactory.create = jest.fn();
         jest.spyOn(cacheFactory, 'create');
         new CacheGeolocalizationResultService(mockedEnvConfig, daoFactoryMock, cacheFactory);
-        expect(cacheFactory.create).toHaveBeenCalledTimes(1);
+        expect(cacheFactory.create).toBeCalled();
     });
 
 });

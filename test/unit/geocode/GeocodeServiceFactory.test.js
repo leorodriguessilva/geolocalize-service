@@ -1,7 +1,8 @@
-const GeocodeServiceFactory = require('../../../geocode/GeocodeServiceFactory');
-const FakeGeocodeService = require('../../../geocode/FakeGeocodeService');
-const GoogleGeocodeService = require('../../../geocode/GoogleGeocodeService');
-const GeocodeProvider = require('../../../domain/GeocodeProvider');
+'use strict';
+const GeocodeServiceFactory = require('../../../src/geocode/GeocodeServiceFactory');
+const FakeGeocodeService = require('../../../src/geocode/FakeGeocodeService');
+const GoogleGeocodeService = require('../../../src/geocode/GoogleGeocodeService');
+const GeocodeProvider = require('../../../src/domain/GeocodeProvider');
 
 describe('instantiate geocode service factory', () => {
 

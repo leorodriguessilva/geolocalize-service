@@ -1,19 +1,24 @@
+'use strict';
+
 const NoDatabaseGeolocalizationApiResultDao = require('./NoDatabaseGeolocalizationApiResultDao');
 const CassandraGeolocalizationApiResultDao = require('./CassandraGeolocalizationApiResultDao');
+const DynamoDBGeolocalizationApiResultDao = require('./DynamoDBGeolocalizationApiResultDao');
+const GeolocalizationApiResultDaoLogger = require('./GeolocalizationApiResultDaoLogger');
 const TypeCacheEnum = require('../domain/TypeCache');
 
 class DaoFactory {
 
-    constructor(typeCache) {
+    constructor(typeCache, environmentConfig) {
         this.typeCache = typeCache;
+        this.environmentConfig = environmentConfig;
     }
 
     create() {
         if (this.typeCache == TypeCacheEnum.MEMORY_AND_PERSISTENT_CACHE 
             || this.typeCache == TypeCacheEnum.ONLY_PERSISTENT_CACHE) {
-            return this._createNoPersistentDao();
+            return this._createPersistentDao();
         }
-        return this._createPersistentDao();
+        return this._createNoPersistentDao();
     }
 
     _createNoPersistentDao() {
@@ -38,7 +43,12 @@ class DaoFactory {
                 this.environmentConfig.AWS_DEFAULT_REGION, 
                 this.environmentConfig.persistentCacheTable);
         }
-        this.geolocalizationApiResultDao = new GeolocalizationApiResultDaoLogger(wrapped);
+
+        if (this.environmentConfig.logPersistentCache) {
+            this.geolocalizationApiResultDao = new GeolocalizationApiResultDaoLogger(wrapped);
+            return this.geolocalizationApiResultDao;
+        }
+        this.geolocalizationApiResultDao = wrapped;
         return this.geolocalizationApiResultDao;
     }
 }

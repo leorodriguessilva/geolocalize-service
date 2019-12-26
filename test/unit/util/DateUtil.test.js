@@ -1,4 +1,5 @@
-const isBeforeNow = require('../../../util/DateUtil');
+'use strict';
+const isBeforeNow = require('../../../src/util/DateUtil');
 
 describe('function to detect if given time from date is before time from now', () => {
 
