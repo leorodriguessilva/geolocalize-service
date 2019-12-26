@@ -4,7 +4,8 @@
   "description": "Service to translate addresses into longitude and latitude",
   "main": "Geolocalize.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "gulp clean, gulp"
   },
   "repository": {
     "type": "git",
@@ -28,10 +29,13 @@
     "@google/maps": "^1.0.2",
     "aws-sdk": "^2.585.0",
     "cassandra-driver": "^4.3.1",
+    "gulp": "^4.0.2",
     "redis": "^2.8.0",
     "redis-clustr": "^1.7.0"
   },
   "devDependencies": {
+    "gulp-clean": "^0.4.0",
+    "gulp-zip": "^5.0.1",
     "jest": "^24.9.0",
     "redis-mock": "^0.47.0"
   }
