@@ -5,7 +5,7 @@
   "main": "Geolocalize.js",
   "scripts": {
     "test": "jest",
-    "build": "gulp clean, gulp"
+    "build": "gulp clean && gulp build"
   },
   "repository": {
     "type": "git",
