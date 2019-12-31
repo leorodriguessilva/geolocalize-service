@@ -4,6 +4,8 @@ const RedisClientFactory = require('../dao/redis/RedisClientFactory');
 const DaoFactory = require('../dao/DaoFactory');
 const CacheFactory = require('../dao/CacheFactory');
 const CacheGeolocalizationResultService = require('./CacheGeolocalizationResultService');
+const GeocodeServiceFactory = require('../geocode/GeocodeServiceFactory');
+const GeolocalizeService = require('./GeolocalizeService');
 
 class GeolocalizationServiceFactory {
 
@@ -11,7 +13,7 @@ class GeolocalizationServiceFactory {
         this.envConfig = envConfig;
     }
 
-    create() {
+    create(event) {
         const redisClientFactory = new RedisClientFactory(this.envConfig);
         const daoFactory = new DaoFactory(event.typeCache, this.envConfig);
         const cacheFactory = new CacheFactory(event.typeCache, redisClientFactory, this.envConfig.cacheExpirationInSeconds);

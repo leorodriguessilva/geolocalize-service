@@ -1,4 +1,8 @@
-const geolocalize = require("../../Geolocalize");
+'use strict';
+
+const GeolocalizeEventHandler = require('../../src/handler/GeolocalizeEventHandler');
+const GeolocalizeServiceFactory = require('../../src/service/GeolocalizationServiceFactory');
+const { initializeLogger } = require('../../src/logger/LogManager');
 const Event = require('./domain/MockedEvent');
 const Environment = require('./domain/MockedEnvironment');
 
@@ -19,6 +23,10 @@ if(typeCache) {
     event.typeCache = parseInt(typeCache);
 }
 
-geolocalize(event).then(resultQueries => {
+initializeLogger(process.env.loggerType);
+const serviceFactory = new GeolocalizeServiceFactory(process.env);
+const handler = new GeolocalizeEventHandler(serviceFactory, process.env.amountQueriesProcessing);
+
+handler.geolocalize(event).then(resultQueries => {
     console.log(JSON.stringify(resultQueries));
 });

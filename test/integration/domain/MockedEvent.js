@@ -1,4 +1,4 @@
-const TypeCacheEnum = require('../../../domain/TypeCache');
+const TypeCacheEnum = require('../../../src/domain/TypeCache');
 
 const Event = {
     queries: [
@@ -6,7 +6,7 @@ const Event = {
         '33 Travessa Albertina Ganzo, Centro, Florianópolis, SC', 
         '127 R. Médico Miguel Salles Cavalcanti, Abraão, Florianópolis, SC',
     ],
-    typeCache: TypeCacheEnum.MEMORY_AND_PERSISTENT_CACHE,
+    typeCache: TypeCacheEnum.NO_CACHE,
 };
 
 module.exports = Event;

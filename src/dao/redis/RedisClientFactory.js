@@ -1,7 +1,7 @@
 'use strict';
 
 const RedisClient = require('redis');
-const { getLogger } = require('../logger/LogManager');
+const { getLogger } = require('../../logger/LogManager');
 
 class RedisClientFactory {
 

@@ -10,7 +10,7 @@ class GeolocalizeEventHandler {
     }
     
     async geolocalize(event) {    
-        const geolocalizeService = this.geolocalizeServiceFactory.create();
+        const geolocalizeService = this.geolocalizeServiceFactory.create(event);
     
         const geolocalizationQueries = event.queries;
         const resultQueries = new Map();

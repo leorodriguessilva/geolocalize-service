@@ -13,6 +13,7 @@ const Environment = {
     persistentCacheTable: 'geolocalizationApiResult',
     randomLocationMaxSize: 3,
     geocodeProvider: 0,
+    loggerType: 1,
 }
 
 module.exports = Environment;

@@ -10,7 +10,8 @@ const cleanDist = async () => {
 
 const build = async () => {
     await gulp.src([
-        './**/*', 
+        './src/**/*',
+        './**/*',  
         '!./test/**', 
         '!./dist/**',
         '!./.gitignore',
