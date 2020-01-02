@@ -1,6 +1,7 @@
 const gulp = require('gulp');
 const zip = require('gulp-zip');
 const clean = require('gulp-clean');
+const install = require('gulp-install');
 const package = require('./package.json');
  
 const cleanDist = async () => {
@@ -8,16 +9,33 @@ const cleanDist = async () => {
     .pipe(clean());
 };
 
-const build = async () => {
+const cleanBuild = async () => {
+    await gulp.src([
+        './tmp',
+    ], {read: false, allowEmpty: true})
+    .pipe(clean().on('error', (err) => {
+        console.log(err);
+    }));
+};
+
+const buildSrc = async () => {
     await gulp.src([
         './src/**/*',
-        './**/*',  
-        '!./test/**', 
-        '!./dist/**',
-        '!./.gitignore',
-        '!gulpfile.js',
-        '!README.md',
-        '!./.vscode/**',
+    ])
+    .pipe(gulp.dest('tmp'));
+};
+
+const buildDeps = async () => {
+    await gulp.src([
+        './package.json',
+    ])
+    .pipe(gulp.dest('tmp'))
+    .pipe(install({production: true}));
+};
+
+const zipFiles = async () => {
+    await gulp.src([
+        './tmp/**'
     ])
     .pipe(zip(`${package.name}_${package.version}.zip`))
     .pipe(gulp.dest('dist'));
@@ -25,4 +43,10 @@ const build = async () => {
 
 module.exports.clean = cleanDist;
 
-module.exports.build = build;
+module.exports.cleanBuild = cleanBuild;
+
+module.exports.build = buildSrc;
+
+module.exports.buildDeps = buildDeps;
+
+module.exports.package = zipFiles;

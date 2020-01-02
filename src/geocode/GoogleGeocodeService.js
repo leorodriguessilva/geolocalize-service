@@ -25,7 +25,7 @@ class GoogleGeocodeService {
 
     _parseResponse(response) {
         let results = [];
-        if(response.status == RESPONSE_OK) {
+        if(response && response.status == RESPONSE_OK) {
             response.json.results.forEach(place => {
                 results.push(place.geometry.location);
             });
