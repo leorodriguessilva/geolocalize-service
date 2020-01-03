@@ -35,7 +35,7 @@ class GeolocalizeEventHandler {
     
         const response = {
             statusCode: 200,
-            resultQueries,
+            resultQueries: Array.from(resultQueries),
         };
     
         return response;

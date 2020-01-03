@@ -14,9 +14,9 @@ class RedisClientFactory {
 
     create() {
         this.client = RedisClient.createClient(`${this.hostAddress}:${this.hostPort}`);
-        client.on('connect', this._onConnect.bind(this));
-        client.on('error', this._onConnectError.bind(this));
-        return client;
+        this.client.on('connect', this._onConnect.bind(this));
+        this.client.on('error', this._onConnectError.bind(this));
+        return this.client;
     }
 
     _onConnect() {

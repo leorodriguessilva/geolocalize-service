@@ -31,8 +31,9 @@ describe('geolocalize handler dependencies', () => {
         handler.geolocalize({
             typeCache: TypeCache.NO_CACHE,
             queries: []
+        }).then(() => {
+            expect(serviceFactoryMock.create).toBeCalled();
         });
-        expect(serviceFactoryMock.create).toBeCalled();
     });
     
     test('geolocalize service should have geolocalize function invoked to translate lat lng from query', () => {
@@ -41,9 +42,10 @@ describe('geolocalize handler dependencies', () => {
         handler.geolocalize({
             typeCache: TypeCache.NO_CACHE,
             queries: [ 'geolocalize' ]
+        }).then(() => {
+            expect(spy).toBeCalled();
+            spy.mockClear();
         });
-        expect(spy).toBeCalled();
-        spy.mockClear();
     });
     
     test('geolocalize service should have geolocalize function invoked ten times to translate lat lng from ten queries', () => {
@@ -118,7 +120,7 @@ describe('geolocalize handler response', () => {
             typeCache: TypeCache.NO_CACHE,
             queries: [ 'query' ]
         }).then((response) => {
-            expect(response.resultQueries.size).toBe(1);
+            expect(response.resultQueries.length).toBe(1);
         });
     });
 
@@ -145,7 +147,7 @@ describe('geolocalize handler response', () => {
                 'query10',
             ]
         }).then((response) => {
-            expect(response.resultQueries.size).toBe(10);
+            expect(response.resultQueries.length).toBe(10);
         });
     });
 });
