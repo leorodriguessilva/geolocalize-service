@@ -21,3 +21,5 @@ In the root folder run the command:
 Update dependencies - `npm install`
 
 Run tests - `npm test`
+
+To build into a zip file - `npm run build`
