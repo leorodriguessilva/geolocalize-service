@@ -5,7 +5,7 @@
   "main": "Geolocalize.js",
   "scripts": {
     "test": "jest",
-    "build": "gulp clean && gulp build && gulp buildDeps && gulp package && gulp cleanBuild"
+    "build": "gulp clean && gulp build && gulp buildDeps && gulp transpile && gulp package && gulp cleanBuild"
   },
   "repository": {
     "type": "git",
@@ -38,6 +38,8 @@
     "gulp-install": "^1.1.0",
     "gulp-zip": "^5.0.1",
     "jest": "^24.9.0",
-    "redis-mock": "^0.47.0"
+    "redis-mock": "^0.47.0",
+    "webpack-cli": "^3.3.10",
+    "webpack-stream": "^5.2.1"
   }
 }
