@@ -12,7 +12,7 @@ const Environment = {
     amountQueriesProcessing: 100,
     persistentCacheTable: 'geolocalizationApiResult',
     randomLocationMaxSize: 3,
-    geocodeProvider: 0,
+    geocodeProvider: 1,
     loggerType: 1,
 }
 
