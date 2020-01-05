@@ -29,7 +29,7 @@ class DynamoDBGeolocalizationApiResultDao {
             Item: {
               query :  geolocalizationApiResult.query ,
               locations : geolocalizationApiResult.locations,
-              expireAt : geolocalizationApiResult.expireAt.getTime(),
+              expireAt : geolocalizationApiResult.expireAt,
             }
         };
         
