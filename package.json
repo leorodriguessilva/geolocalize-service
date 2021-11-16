@@ -27,7 +27,7 @@
   "homepage": "https://github.com/leorodriguessilva/geolocalize-service#readme",
   "dependencies": {
     "@google/maps": "^1.0.2",
-    "aws-sdk": "^2.585.0",
+    "aws-sdk": "^2.814.0",
     "cassandra-driver": "^4.3.1",
     "redis": "^2.8.0",
     "redis-clustr": "^1.7.0"
